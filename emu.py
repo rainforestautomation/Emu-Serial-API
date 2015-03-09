@@ -1,22 +1,15 @@
 #!/usr/bin/env python 
 from lxml import etree
 from lxml import objectify
+import api_classes
 import argparse
 from io import StringIO, BytesIO
-import re
-import json
-from contextlib import contextmanager
-import sys, os
-import subprocess
-import io
-import copy
-import sys
-import threading
-import platform
-import time
-import serial
+import re,json,sys,os, subprocess,io,copy,threading,platform,time,serial
 
-
+def recursive_dict(element):
+     return element.tag, dict(map(recursive_dict, element)) or element.text
+     
+     
 class emu():
     obj_type="emu_serial"
     #this is a list of all tags that are possible in the emu!
@@ -31,7 +24,6 @@ class emu():
     #used in set_fast_poll
     frequency=etree.Element('Frequency')
     duration = etree.Element('Duration')
-    
     _type = etree.Element('Type')
     confirm = etree.Element('Confirm')
     refresh = etree.Element('Refresh')
@@ -125,16 +117,13 @@ class emu():
     cmd_image_block ="image_block"
     cmd_image_block_request ="image_block_request"
     cmd_image_invalidate_current= "image_invalidate_current"
-    
-    
-    
-    
+    #device management details
     baud_rate = 115200
     port =0
     environment ="linux"
     windows_prefix = "COM"
     linux_prefix = "/dev/"
-    osx_prefix = "/dev/tty.usbmodemfd121"
+    osx_prefix = "/dev/"
     parity =serial.PARITY_NONE
     rtscts=0
     dsrdtr=0
@@ -145,6 +134,8 @@ class emu():
     serial_attempt=0
     serial_connected = False
     illegal_xml_re = re.compile(u'[\x00-\x08\x0b-\x1f\x7f-\x84\x86-\x9f\ud800-\udfff\ufdd0-\ufddf\ufffe-\uffff]')
+    original_block = ""
+    history=[]
     def __init__(self, port):
         self.port = port
         if platform.system()=='Windows':
@@ -409,7 +400,6 @@ class emu():
         self.mode.text=mode
         self.event.text=event
         self.command.append(self.command_name)
-        
         self.command.append(self.event)
         #adding in the actual command
         self.write_buffer =etree.tostring(self.command, pretty_print=True)
@@ -421,91 +411,19 @@ class emu():
         #adding in the actual command
         self.write_buffer =etree.tostring(self.command, pretty_print=True)
         print self.write_buffer
-    def image_block_dump(self, offset , blk_size):
-        self.command = copy.copy(self.command_root)
-        self.command_name.text = self.cmd_image_block_dump
-        self.offset.text = offset
-        self.blk_size.text = blk_size
-        self.command.append(self.command_name)
-        self.command.append(self.offset)
-        self.command.append(self.blk_size)
-        #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
-    def print_all_commands(self):
-        print "emu.restart()"
-        self.restart()
-        print "emu.get_device_info()"
-        self.get_device_info()
-        print "emu.get_network_info()"
-        self.get_network_info()
-        print "emu.factory_reset()"
-        self.factory_reset()
-        print "emu.factory_reset()"
-        self.factory_reset()
-        print "emu.get_restart_info()"
-        self.get_restart_info()
-        print "emu.set_restart_info('TYPE', 'CONFIRM')"
-        self.set_restart_info('TYPE','CONFIRM')
-        print "emu.set_meter_attributes(multiplier,divisor)"
-        self.set_meter_attributes('multiplier','divisor')
-        print "emu.set_fast_poll(frequency, duration)"
-        self.set_fast_poll('frequency','duration')
-        print "emu.get_fast_poll_status()"
-        self.get_fast_poll_status()
-        print "emu.get_current_summation()"
-        self.get_current_summation()
-        print "emu.get_instantaneous_demand(refresh)"
-        self.get_instantaneous_demand('refresh')
-        print "emu.get_time(refresh)"
-        self.get_time('refresh')
-        print "emu.set_current_price(price, trailing_digits)"
-        self.set_current_price('price','trailing_digits')
-        print "emu.set_meter_info(nickname,account,auth,host,enabled)"
-        self.set_meter_info('nickname','account','auth', 'host','enabled')
-        print "emu.get_message()"
-        self.get_message()
-        print "emu.get_local_attributes()"
-        self.get_local_attributes()
-        print "emu.set_local_attributes(current_day_max_demand)"
-        self.set_local_attributes('current_day_max_attributes')
-        print "emu.get_billing_periods()"
-        self.get_billing_periods()
-        print "emu.set_billing_periods_list(number_of_periods)"
-        self.set_billing_period_list('number_of_billing_period')
-        print "emu.set_biling_period(period,start)"
-        self.set_billing_period('period','start')
-        print "emu.get_price_blocks()"
-        self.get_price_blocks()
-        print "emu.set_price_block(blcak,threshold,price)"
-        self.set_price_block('block',"threshold","price")
-        print "emu.get_schedule(mode)"
-        self.get_schedule('mode')
-        print "emu.get_profile_data(num_of_periods,interval_channel)"
-        self.get_profile_data('num_of_periods','interval_channel')
-        print "emu.set_schedule(self,event,mode=None, frequency=None, enabled =None)"
-        self.set_schedule('event','mode', 'freq', 'en')
-        print "emu.print_network_tables()"
-        self.print_network_tables()
-        print "emu.image_block_dump(offset, blk_size)"
-        self.image_block_dump('offset','blk_size')
     def create_serial(self):
         try:
             if self.environment =="osx":
-                print "OSX"
-                self.ser = serial.Serial(self.osx_prefix,self.baud_rate,timeout=self.timeout)
+                self.ser = serial.Serial(self.osx_prefix+str(self.port),self.baud_rate,timeout=self.timeout)
             elif self.environment == "linux":
-                print "------------LINUX------------"
                 self.ser = serial.Serial(self.linux_prefix+str(self.port),self.baud_rate,timeout=self.timeout)
             else:
-                print "------------WINDOWS------------"
                 self.ser = serial.Serial(self.windows_prefix+str(self.port),self.baud_rate,timeout=self.timeout)
             self.serial_connected =True
             self.serial_attempt=0
-            print self.environment
         except:
             if self.serial_attempt >3:
-                print "throwing an error- cant connect to serial"
+                print "Throwing an error, can't connect to EMU serial"
                 raise
             else:
                 self.serial_attempt = self.serial_attempt+1
@@ -514,14 +432,14 @@ class emu():
     def serial_thread(self):
         self.stop_thread=False
         #this function is the thread which reads from the serial, writes to the serial and calls parsing functions
-        print "starting thread"
+        print "Starting serial process for EMU on "+str(self.port)
         #inifinite loop
         try:
             self.create_serial()
             while True:
                 if self.stop_thread is True:
                     self.ser.close()
-                    print "SERIAL CLOSED"
+                    print "Closing serial port for EMU"
                     #in case we was to stop thread
                     self.stop_thread=False
                     self.serial_connected=False
@@ -540,7 +458,7 @@ class emu():
                             pass
                         self.ser.write(self.write_buffer)
                         self.write_buffer = None
-                        time.sleep(0.5)
+                        time.sleep(0.1)
         except:
             raise
     def start_serial(self):
@@ -561,10 +479,6 @@ class emu():
         for tag in self.responseRoots:
             tagToString = '<'+tag+'>'
             if  tagToString in line:
-                if self.tag =='TimeCluster' and tag =='TimeCluster':
-                    #this is a end tag.... sigh terrible hack to parse 
-                    pass
-                else:
                     start_tag=True;
                     self.tag = tag
         return start_tag
@@ -579,99 +493,38 @@ class emu():
         return end_tag
     def serial_reader(self,line):
         #this function is reads the text
-        self.line_count=0
         self.start_flag=False
         if self.look_for_start_tag(line):
-            if self.print_string:
-                print "--------BLOCK OPENING----------"
             self.tag_block=True
             self.start_flag=True
-        if self.print_string:
-            print line.rstrip()
         if self.tag_block ==True:
+            self.original_block = self.original_block+line
             self.block_string = self.block_string+line.rstrip()
         if self.look_for_end_tag(line):
             self.tag_block = False
-            if self.print_string:
-                # self.block_string
-                print "--------BLOCK CLOSING----------"
             try:
                 self.block_to_tree(self.block_string,self.tag)
             except Exception as e:
                 print str(e)
                 print "XML ISSUE"
                 obj =dict()
-                obj['XML_ERROR'] = True
-                f =open('test_results.txt','a')
-                f.write(json.dumps(obj)+"\n")
-                f.close()
                 # self.block_string
             self.block_string=""
+            self.original_block = ""
         self.start_flag=False
     def block_to_tree(self,block_string,tag):
         #print "converting string"
         block_string = self.illegal_xml_re.sub('', block_string)
-        if self.print_string:
-            print str(block_string)
-        if tag == 'ApsTable':
-            print "ApsTable Block Found"
+        if tag in self.responseRoots:
             self.xmlTree =objectify.fromstring(block_string)
-        elif tag == 'NetworkInfo':
-            print "NetworkInfo Block Found"
-            self.xmlTree =objectify.fromstring(block_string)
-        elif tag== 'NwkTable':
-            print "NwkTable Block Found"
-            self.xmlTree =objectify.fromstring(block_string)
-        elif tag == 'Information':
-            print "Information Block Found"
-            self.xmlTree = objectify.fromstring(block_string)
-        elif tag =='TimeCluster':
-            print "TimeCluster Block Found"
-            self.xmlTree =objectify.fromstring(block_string)
-        elif tag =='PriceCluster':
-            print "TimeCluster Block Found"
-            self.xmlTree =objectify.fromstring(block_string)
-        elif tag =='DeviceInfo':
-            print "TimeCluster Block Found"
-            self.xmlTree =objectify.fromstring(block_string)
-        elif tag =='Google':
-            print "Google Block Found"
-            self.xmlTree =objectify.fromstring(block_string)
-        elif tag =='SimpleMeteringCluster':
-            print "SimpleMeteringCluster Block Found"
-            self.xmlTree =objectify.fromstring(block_string)
-        elif tag =='InstantaneousDemand':
-            print "InstantaneousDemand Block Found"
-            self.xmlTree =objectify.fromstring(block_string)
-        elif tag =='BlockPriceDetail':
-            print "BlockPriceDetail Block Found"
-            self.xmlTree =objectify.fromstring(block_string)
-        elif tag =='ConnectionStatus':
-            print "ConnectionStatus Block Found"
-            self.xmlTree =objectify.fromstring(block_string)
-        elif tag =='BillingPeriodList':
-            print "BillingPeriodList Block Found"
-            self.xmlTree =objectify.fromstring(block_string)
-        elif tag =='MessageCluster':
-            print "MessageCluster Block Found"
-            self.xmlTree =objectify.fromstring(block_string)
-        elif tag =='FastPollStatus':
-            print "FastPollStatus Block Found"
-            self.xmlTree =objectify.fromstring(block_string)
-        elif tag =='CurrentSummationDelivered':
-            print "CurrentSummationDelivered Block Found"
-            self.xmlTree =objectify.fromstring(block_string)
-        try:
-            f =open('static/emu-log.txt','a')
-            f.write('\n')
-            f.close()
-        except:
-            #no log file
-            pass
+            module = __import__('api_classes')
+            class_ =getattr(module, tag)
+            print "class grabbed"
+            instance = class_(self.xmlTree)
+            print "instance made"
+            self.write_history('EMU', tag, self.original_block, self.xmlTree)
         self.state[tag] = dict()
-        print str(tag)
         for element in self.xmlTree.iter():
-            print str(element)
             self.data[element.tag] = element.text
             self.state[tag][element.tag]=element.text
         for tag in self.responseRoots:
@@ -679,76 +532,34 @@ class emu():
                 del self.data[tag]
             except:
                 pass
-    def test_script(self):
-        self.array_of_functions =[self.restart, self.get_device_info,self.get_network_info, self.factory_reset]
-        for f in self.array_of_functions:
-            f()
-
-            
-        
-if __name__ =="__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-d','--device', help='Port to open emu on', required=False)
-    parser.add_argument('-x','--execute', help='Test to Execute', required=False)
-    parser.add_argument('-m','--mac_id', help='mac_id', required=False)
-    parser.add_argument('-t','--timeout', help='Timeout', required=False)
-    parser.add_argument('-r','--remove', help='delete all data from database', required=False)
-    args = vars(parser.parse_args())
-    if args['timeout'] == None:
-        timeout=20
-    else:
-        timeout= int(args['timeout'] )
-    if args['remove'] !=None:
-        Session.query(penguin_macs_visible).delete()
-    if args['device'] == None and args['mac_id']== None:
-        #cant figure out mac_id if we dont have a port OR device location
-        print "Error: no emu info"
-        sys.exit(1)
-    elif args['device'] !=None and args['mac_id']== None:
-        # weve supplied the devie and no mac id
-        print "Attempting to get EMU mac_id from serial port "+str(args['device'])
-        emu = emu(str(args['device']))
-        emu.start_serial()
-        emu.get_device_info()
-        time.sleep(5)
-        j=3
-        mac_id =""
-        while j >0:
-            if "DeviceMacId" in emu.state['ConnectionStatus']:
-                mac_id = emu.state['ConnectionStatus']["DeviceMacId"]
-                emu.stop_serial()
+    def write_history(self,origin, tag, raw, dict_):
+        history_obj ={
+            'origin':origin,
+            'type':tag,
+            'dict':dict_,
+            'raw': raw
+        }
+        self.history.append(history_obj)
+    def readback(self, limit=100):
+        limit_count = 0
+        for item in reversed(self.history):
+            print "SENT BY :"+str(item['origin'])
+            print "TYPE OF :"+str(item['type'])
+            print "RAW DATA:-------------------       "
+            print str(item['raw'])
+            print "PYTHON DICTIONARY-----------       "
+            print str(self.xmlTree)
+            print str(type(recursive_dict(self.xmlTree.getroot())))
+            limit_count +=1
+            if limit_count >limit:
                 break
-            else:
-                emu.get_device_info()
-                print str(emu.data)
-                time.sleep(3)
-                j=j-1
-        if mac_id =="":
-            emu.stop_serial()
-            print "Error: failed to get mac_id from device"
-            sys.exit(2)
-    else:
-        #we've supplied a mac_id, thats good enough, lets look it up
-        print "using supplied mac_id"
-        mac_id =str(args['mac_id'])
-    #now lets check the db for the mac_id
-    timeout = time.time() + timeout
-    while True:
-        if time.time() > timeout:
-            break
-        emuSighting =Session.query(penguin_macs_visible).filter_by(mac_id = mac_id).first()
-        if emuSighting !=None:
-            break
-        else:
-            time.sleep(1)
-            Session.close()
-            Session = scoped_session(sessionmaker(engine))
-    if emuSighting == None:
-        print "Fail: "+mac_id+" not found"
-        sys.exit(10)
-    else:
-        print "Pass: "+mac_id+" found in database."
-        sys.exit(0)
-            
+    def clear_history():
+        self.history=[]
+
         
-        
+if __name__ == '__main__':
+    e = emu('tty.usbmodemfd121')
+    e.start_serial()
+    time.sleep(10)
+    e.readback(1000)
+    e.stop_serial()
