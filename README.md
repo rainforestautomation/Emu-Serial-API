@@ -147,6 +147,6 @@ List of commands that can be issued:
     
 #Comments or suggestions
 
-The maintainer of this repo can be contacted at john dot lee at rainforestautomation dot com. Feel free to create issues or bugs if the api does something unexpected
+The maintainer of this repo can be contacted at john dot lee at rainforestautomation dot com. Feel free to create issues  if the api does something unexpected
 
 
