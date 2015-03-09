@@ -1,0 +1,875 @@
+################################################################################
+# Device info
+#
+# <DeviceInfo>
+#   <DeviceMacId>0x00158d00001aba06</DeviceMacId>
+#   <InstallCode>0x2cf02603038d9582</InstallCode>
+#   <LinkKey>0x419bfc53fa83323a0824353f638e46f6</LinkKey>
+#   <FWVersion>1.4.13 (4718)</FWVersion>
+#   <HWVersion>3.1.1</HWVersion>
+#   <Manufacturer>st</Manufacturer>
+#   <ModelId>RFA-Z106</ModlId>
+#   <DateCode>20120923ABCDeCode>
+# </DeviceInfo>
+################################################################################
+
+<Command>
+  <Name>get_device_info</Name>
+</Command>
+<Command>
+  <Name>get_network_info</name>
+</Command>
+<Command>
+  <Name>get_device_info</Name>
+</Command>
+
+################################################################################
+# Connection
+################################################################################
+
+<Command>
+  <Name>get_connection_status</name>
+</Command>
+
+################################################################################
+# Network info
+################################################################################
+
+<Command>
+  <Name>get_network_info</name>
+</Command>
+
+################################################################################
+# Restart, reset
+################################################################################
+
+<Command>
+  <Name>restart</Name>
+</Command>
+
+<Command>
+  <Name>factory_reset</Name>
+</Command>
+
+<Command>
+  <Name>erase_halt</Name>
+</Command>
+
+<Command>
+  <Name>get_restart_info</Name>
+</Command>
+
+<Command>
+  <Name>set_restart_info</Name>
+  <Type>0x00</Type>
+  <Confirm>0x00</Confirm>
+</Command>
+
+<Command>
+  <Name>set_restart_info</Name>
+  <Type>0x01</Type>
+  <Confirm>0xFF</Confirm>
+</Command>
+
+################################################################################
+# Custom meter
+################################################################################
+
+<Command>
+  <Name>get_meter_attributes</Name>
+</Command>
+
+<Command>
+  <Name>set_meter_attributes</Name>
+  <Multiplier>0x0000031b</Multiplier>
+  <Divisor>0x000033e8</Divisor>
+</Command>
+
+<Command>
+  <Name>set_meter_attributes</Name>
+  <Divisor>100000</Divisor>
+</Command>
+
+<Command>
+  <Name>set_meter_attributes</Name>
+  <Multiplier>0xffffffff</Multiplier>
+  <Divisor>0xffffffff</Divisor>
+</Command>
+
+################################################################################
+# Fast poll
+################################################################################
+
+<Command>
+  <Name>set_fast_poll</name>
+  <Frequency>0xff</Frequency>
+  <Duration>0x03</Duration>
+</Command>
+
+<Command>
+  <Name>get_fast_poll_status</name>
+</Command>
+
+################################################################################
+# Demand
+################################################################################
+
+
+<Command>
+  <Name>get_current_summation_delivered</name>
+</Command>
+
+<Command>
+  <Name>get_current_summation_delivered</name>
+  <Refresh>Y</Refresh>
+</Command>
+
+<Command>
+  <Name>get_instantaneous_demand</name>
+</Command>
+
+<Command>
+  <Name>get_instantaneous_demand</name>
+  <Refresh>Y</Refresh>
+</Command>
+
+################################################################################
+# Time
+################################################################################
+
+<Command>
+  <Name>get_time</name>
+</Command>
+
+<Command>
+  <Name>get_time</name>
+  <Refresh>Y</Refresh>
+</Command>
+
+################################################################################
+# Price
+################################################################################
+
+<Command>
+  <Name>get_current_price</Name>
+  <Refresh>Y</Refresh>
+</Command>
+
+<Command>
+  <Name>get_current_price</Name>
+</Command>
+
+<Command>
+  <Name>set_current_price</Name>
+  <TrailingDigits>0x06</TrailingDigits>
+</Command>
+
+<Command>
+  <Name>set_current_price</Name>
+  <Price>0x0003e8</Price>
+  <Currency>0x1234</Currency>
+  <TrailingDigits>0x05</TrailingDigits>
+</Command>
+
+<Command>
+  <Name>set_current_price</Name>
+  <Price>0xFFFFFFFF</Price>
+  <TrailingDigits>0x05</TrailingDigits>
+</Command>
+
+<Command>
+  <Name>set_current_price</Name>
+  <Price>0x000000</Price>
+  <TrailingDigits>0x05</TrailingDigits>
+</Command>
+
+# 99.9999c/kWh
+<Command>
+  <Name>set_current_price</Name>
+  <Price>0x000F423F</Price>
+  <TrailingDigits>0x06</TrailingDigits>
+</Command>
+  <Price>0x000F423F</Price>
+
+# $1.23/kWh
+<Command>
+  <Name>set_current_price</Name>
+  <Price>0x0000007B</Price>
+  <TrailingDigits>0x02</TrailingDigits>
+</Command>
+
+<Command>
+  <Name>get_meter_info</Name>
+</Command>
+
+
+<Command>
+  <Name>set_meter_info</Name>
+  <Nickname>Bidgely</Nickname>
+  <Account>TMauro</Account>
+  <Auth>7cd994a1f91e1918</Auth>
+  <Host>bidgely.com</Host>
+  <Enabled>Y</Enabled>
+</Command>
+
+################################################################################
+# Message
+################################################################################
+
+<Command>
+  <Name>get_message</name>
+</Command>
+
+<Command>
+  <Name>get_message</name>
+  <Refresh>Y</Refresh>
+</Command>
+
+<Command>
+  <Name>confirm_message</Name>
+  <Id>0x00000003</Id>
+</Command>
+
+################################################################################
+# CSU-C
+################################################################################
+
+# 1.000 kW
+<Command>
+  <Name>set_local_attributes</Name>
+  <CurrentDayMaxDemand>0x00000000000003E8</CurrentDayMaxDemand>
+</Command>
+
+# 2.000 kW
+<Command>
+  <Name>set_local_attributes</Name>
+  <CurrentDayMaxDemand>0x00000000000007D0</CurrentDayMaxDemand>
+</Command>
+
+<Command>
+  <Name>get_local_attributes</Name>
+</Command>
+
+set_local_attributes
+get_local_attributes
+CurrentDayMaxDemand
+
+################################################################################
+# Billing periods
+################################################################################
+
+Tue, 07 May 2013 00:00:00 GMT : 1367884800 : 0x00191b0080 -> 0x19413c00 
+
+<Command>
+  <Name>get_billing_periods</Name>
+</Command>
+
+<Command>
+  <Name>set_billing_period_list</Name>
+  <NumberOfPeriods>0x01</NumberOfPeriods>
+</Command>
+
+Local Date: Tue Apr  2 18:14:56 2013
+<Command>
+  <Name>set_billing_period</Name>
+  <Period>0x01</Period>
+  <Start>0x1afc003c</Start>
+  <Duration>0x0000002000</Duration>
+</Command>
+
+<Command>
+  <Name>set_billing_period</Name>
+  <Period>0x02</Period>
+  <Start>0x0019f99594</Start>
+</Command>
+
+<Command>
+  <Name>set_billing_period</Name>
+  <Period>0x03</Period>
+  <Start>0x0018c2ac00</Start>
+</Command>
+
+<Command>
+  <Name>set_billing_period</Name>
+  <Period>0x04</Period>
+  <Start>0x0018eb8a80</Start>
+</Command>
+
+<Command>
+  <Name>set_billing_period</Name>
+  <Period>0x05</Period>
+  <Start>0x0019131780</Start>
+</Command>
+
+<Command>
+  <Name>set_billing_period</Name>
+  <Period>0x06</Period>
+  <Start>0x00193bf600</Start>
+</Command>
+
+<Command>
+  <Name>set_billing_period</Name>
+  <Period>0x07</Period>
+  <Start>0x0019638300</Start>
+</Command>
+
+<Command>
+  <Name>set_billing_period</Name>
+  <Period>0x08</Period>
+  <Start>0x00198c6180</Start>
+</Command>
+
+<Command>
+  <Name>set_billing_period</Name>
+  <Period>0x09</Period>
+  <Start>0x0019b54000</Start>
+</Command>
+
+<Command>
+  <Name>set_billing_period</Name>
+  <Period>0x0A</Period>
+  <Start>0x0019dccd00</Start>
+</Command>
+
+<Command>
+  <Name>set_billing_period</Name>
+  <Period>0x0B</Period>
+  <Start>0x001a05ab80</Start>
+</Command>
+
+<Command>
+  <Name>set_billing_period</Name>
+  <Period>0x0C</Period>
+  <Start>0x001a2d3880</Start>
+</Command>
+
+<Command>
+  <Name>get_billing_periods</Name>
+</Command>
+
+
+# ------------------------------------------------------------------------------
+# Price blocks
+# ------------------------------------------------------------------------------
+<BlockPriceDetail>
+  <DeviceMacId>0x00158d00001a5551</DeviceMacId>
+  <MeterMacId>0x000781000081fd18</MeterMacId>
+  <TimeStamp>0x1a9018d4</TimeStamp>
+  <NumberOfBlocks>0x04</NumberOfBlocks>
+  <Multiplier>0x00000001</Multiplier>
+  <Divisor>0x0000000a</Divisor>
+  <Currency>0x0348</Currency>
+  <TrailingDigits>0x05</TrailingDigits>
+  <Threshold1>0x0000102c</Threshold1>
+  <Price1>0x000039ac</Price1>
+  <Threshold2>0x00001506</Threshold2>
+  <Price2>0x000042b5</Price2>
+  <Threshold3>0x00002058</Threshold3>
+  <Price3>0x00007fe1</Price3>
+  <Threshold4>0xffffffff</Threshold4>
+  <Price4>0x000087b1</Price4>
+</BlockPriceDetail>
+
+<Command>
+  <Name>get_price_blocks</Name>
+</Command>
+
+<Command>
+  <Name>set_block_structure</Name>
+  <NumberOfBlocks>0x00</NumberOfBlocks>
+</Command>
+
+<Command>
+  <Name>set_block_structure</Name>
+  <TrailingDigits>0x06</TrailingDigits>
+</Command>
+
+<Command>
+  <Name>set_block_structure</Name>
+  <NumberOfBlocks>0x04</NumberOfBlocks>
+  <Multiplier>0x00000001</Multiplier>
+  <Divisor>0x000003e8</Divisor>
+  <TrailingDigits>0x05</TrailingDigits>
+  <Currency>0x0840</Currency>
+</Command>
+
+# 1.00
+<Command>
+  <Name>set_price_block</Name>
+  <Block>0x01</Block>
+  <Threshold>0x0000012c</Threshold>
+</Command>
+  <Price>0x0005dc</Price>
+
+<Command>
+  <Name>set_price_block</Name>
+  <Block>0x02</Block>
+  <Threshold>0x00002600</Threshold>
+  <Price>0x0009c4</Price>
+</Command>
+
+<Command>
+  <Name>set_price_block</Name>
+  <Block>0x03</Block>
+  <Threshold>0x000F3000</Threshold>
+  <Price>0x000bb8</Price>
+</Command>
+
+<Command>
+  <Name>set_price_block</Name>
+  <Block>0x04</Block>
+  <Threshold>0xFFFFFFFFF0004000</Threshold>
+  <Price>0x000fa0</Price>
+</Command>
+
+<Command>
+  <Name>set_price_block</Name>
+  <Block>0x05</Block>
+  <Threshold>0x00030000</Threshold>
+  <Price>0x002fa0</Price>
+</Command>
+
+<Command>
+  <Name>set_price_block</Name>
+  <Block>0x06</Block>
+  <Threshold>0xFFFFFFFF</Threshold>
+  <Price>0x003fa0</Price>
+</Command>
+
+<Command>
+  <Name>get_price_blocks</Name>
+</Command>
+
+<Command>
+  <Name>secret</Name>
+</Command>
+
+  <MeterMacId>0xFFFFFFFFFFFFFFFF</MeterMacId>
+  [<block>0x00</block>]  << optional to get A particular block, omit to get all
+  <refresh>y</refresh>
+
+# ------------------------------------------------------------------------------
+# Schedule
+# ------------------------------------------------------------------------------
+
+<Command>
+  <Name>get_schedule</Name>
+  <Mode>default</Mode>
+</Command>
+
+<Command>
+  <Name>get_schedule</Name>
+  <Mode>rest</Mode>
+</Command>
+
+# ------------------------------------------------
+# Profile
+# ------------------------------------------------
+
+<Command>
+  <Name>get_profile_data</Name>
+  <NumberOfPeriods>0x0f</NumberOfPeriods>
+  <IntervalChannel>Delivered</IntervalChannel>
+  <EndTime>0x001c078c00</EndTime>
+</Command>
+
+  <EndTime>0x00000000</EndTime>
+  <EndTime>0xffffffff</EndTime>
+
+
+# ------------------------------------------------
+# Match desc
+# ------------------------------------------------
+
+<Command>
+  <Name>get_schedule</Name>
+  <Event>match_descriptor</Event>
+</Command>
+
+# ------------------------------------------------
+# Demand
+# ------------------------------------------------
+
+<Command>
+  <Name>get_schedule</Name>
+</Command>
+
+<Command>
+  <Name>get_schedule</Name>
+  <Mode>default</Mode>
+  <Event>demand</Event>
+</Command>
+
+<Command>
+  <Name>get_schedule</Name>
+  <Mode>sleep</Mode>
+  <Event>demand</Event>
+</Command>
+
+<Command>
+  <Name>set_schedule</Name>
+  <Mode>sleep</Mode>
+  <Event>demand</Event>
+  <Frequency>0x0014</Frequency>
+</Command>
+
+<CommandZPS_EVENT_NWK_JOINED_AS_ENDDEVICE>
+  <Name>get_schedule</Name>
+  <Event>demand</Event>
+</Command>
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>demand</Event>
+  <Frequency>0x000a</Frequency>
+</Command>
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>demand</Event>
+  <Frequency>0x000a</Frequency>
+  <Enabled>Y</Enabled>
+  <Mode>default</Mode>
+</Command>
+
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>demand</Event>
+  <Frequency>0x000a</Frequency>
+  <Enabled>Y</Enabled>
+  <Mode>rest</Mode>
+</Command>
+
+# ------------------------------------------------
+# Summation
+# ------------------------------------------------
+
+<Command>
+  <Name>get_schedule</Name>
+  <Event>summation</Event>
+</Command>
+
+  <Mode>sleep</Mode>
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>summation</Event>
+  <Mode>default</Mode>
+  <Frequency>0x0384</Frequency>
+  <Enabled>Y</Enabled>
+</Command>
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>summation</Event>
+  <Frequency>0x0384</Frequency>
+  <Mode>rest</Mode>
+  <Enabled>Y</Enabled>
+</Command>
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>summation</Event>
+  <Frequency>0x001e</Frequency>
+  <Enabled>Y</Enabled>
+</Command>
+  <Mode>sleep</Mode>
+
+
+# ------------------------------------------------
+# Message
+# ------------------------------------------------
+
+<Command>
+  <Name>get_schedule</Name>
+  <Event>message</Event>
+</Command>
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>message</Event>
+  <Mode>rest</Mode>
+  <Frequency>0x0084</Frequency>
+  <Enabled>Y</Enabled>
+</Command>
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>message</Event>
+  <Mode>default</Mode>
+  <Frequency>0x0084</Frequency>
+  <Enabled>Y</Enabled>
+</Command>
+
+# ------------------------------------------------
+# Scheduled prices
+# ------------------------------------------------
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>scheduled_prices</Event>
+  <Frequency>0x002a</Frequency>
+  <Mode>default</Mode>
+  <Enabled>Y</Enabled>
+</Command>
+
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>scheduled_prices</Event>
+  <Frequency>0x2000</Frequency>
+  <Mode>rest</Mode>
+  <Enabled>Y</Enabled>
+</Command>
+
+<Command>
+  <Name>get_schedule</Name>
+  <Event>scheduled_prices</Event>
+</Command>
+
+# ------------------------------------------------
+# Price
+# ------------------------------------------------
+
+<Command>
+  <Name>get_schedule</Name>
+  <Event>price</Event>
+</Command>
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>price</Event>
+  <Frequency>0x001a</Frequency>
+  <Enabled>Y</Enabled>
+  <Mode>default</Mode>
+</Command>
+
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>price</Event>
+  <Frequency>0x0085</Frequency>
+  <Enabled>Y</Enabled>
+  <Mode>rest</Mode>
+</Command>
+
+<Command>
+  <Name>get_schedule</Name>
+  <Event>price</Event>
+</Command>
+
+# ------------------------------------------------
+# Billing period
+# ------------------------------------------------
+
+<Command>
+  <Name>get_schedule</Name>
+  <Event>billing_period</Event>
+</Command>
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>billing_period</Event>
+  <Frequency>0x00ff</Frequency>
+  <Enabled>Y</Enabled>
+  <Mode>default</Mode>
+</Command>
+
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>billing_period</Event>
+  <Frequency>0x00ff</Frequency>
+  <Enabled>Y</Enabled>
+  <Mode>rest</Mode>
+</Command>
+
+# ------------------------------------------------
+# Block period
+# ------------------------------------------------
+
+<Command>
+  <Name>get_schedule</Name>
+  <Event>block_period</Event>
+</Command>
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>block_period</Event>
+  <Frequency>0x00ff</Frequency>
+  <Enabled>Y</Enabled>
+  <Mode>default</Mode>
+</Command>
+
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>block_period</Event>
+  <Frequency>0x00ff</Frequency>
+  <Enabled>Y</Enabled>
+  <Mode>rest</Mode>
+</Command>
+
+# ------------------------------------------------
+# Profile
+# ------------------------------------------------
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>profile_data</Event>
+  <Frequency>0x001e</Frequency>
+  <Enabled>Y</Enabled>
+  <Mode>default</Mode>
+</Command>
+
+<Command>
+  <Name>set_schedule</Name>
+  <Event>profile_data</Event>
+  <Frequency>0x001e</Frequency>
+  <Enabled>Y</Enabled>
+  <Mode>rest</Mode>
+</Command>
+
+
+
+<Command>
+  <Name>get_schedule</Name>
+  <Event>profile_data</Event>
+</Command>
+
+# ------------------------------------------------------------------------------
+# Debugging stuff
+# ------------------------------------------------------------------------------
+
+<Command>
+  <Name>print_network_tables</Name>
+</Command>
+
+# ------------------------------------------------------------------------------
+# USB upgrade
+# ------------------------------------------------------------------------------
+
+<Command>
+  <Name>image_block_dump</Name>
+  <Offset>0x0040000</Offset>
+  <BlkSize>0x10</BlkSize>
+</Command>
+
+// size=1,000
+<Command>
+  <Name>image_notify</Name>
+  <MfgCode>0x1095</MfgCode>
+  <ImgType>0x0000ff01</ImgType>
+  <Version>0x15281701</Version>
+  <ImgSize>0x03e8</ImgSize>
+</Command>
+
+// size=256
+<Command>
+  <Name>image_notify</Name>
+  <MfgCode>0x1095</MfgCode>
+  <ImgType>0x0000ff01</ImgType>
+  <Version>0x15281701</Version>
+  <ImgSize>0x0100</ImgSize>
+</Command>
+
+<Command>
+  <Name>image_notify</Name>
+  <MfgCode>0x1095</MfgCode>
+  <ImgType>0x0000ff01</ImgType>
+  <Version>0x20031109</Version>
+  <ImgSize>0x0040</ImgSize>
+  <Erase>N</Erase>
+</Command>
+
+# BIG
+# ------------------------------------------------------------------------------
+<command>
+  <name>image_notify</name>
+  <mfgcode>0x1095</mfgcode>
+  <imgtype>0xFF01</imgtype>
+  <version>0x30001108</version>
+  <imgsize>0x410B0</imgsize>
+</command>
+
+<Command>
+  <Name>image_block</Name>
+  <Offset>0x00041080</Offset>
+  <BlkSize>0x40</BlkSize>
+  <Blk>AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=</Blk>
+  <crc16>0x3333</crc16>
+</Command>
+
+<Command>
+  <Name>image_block</Name>
+  <Offset>0x00041040</Offset>
+  <BlkSize>0x40</BlkSize>
+  <Blk>AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=</Blk>
+  <crc16>0x3333</crc16>
+</Command>
+
+<Command>
+  <Name>image_block</Name>
+  <Offset>0x00041000</Offset>
+  <BlkSize>0x40</BlkSize>
+  <Blk>AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=</Blk>
+  <crc16>0x3333</crc16>
+</Command>
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+<Firmware>
+  <Name>image_block_request</Name>
+  <MfgCode>0x1095</MfgCode>
+  <ImgType>0xff01</ImgType>
+  <BlkSize>0x40</BlkSize>
+  <Version>0x30001108</Version>
+  <Offset>0x00041080</Offset>
+</Firmware>
+
+
+<Command>
+  <Name>image_block</Name>
+  <Offset>0x000000c0</Offset>
+  <BlkSize>0x20</BlkSize>
+  <Blk>AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=</Blk>
+  <crc16>0x3333</crc16>
+</Command>
+
+<Command>
+  <Name>image_block</Name>
+  <Offset>0x00000080</Offset>
+  <BlkSize>0x40</BlkSize>
+  <Blk>AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=</Blk>
+  <crc16>0x3333</crc16>
+</Command>
+
+<Command>
+  <Name>image_block</Name>
+  <Offset>0x00000040</Offset>
+  <BlkSize>0x40</BlkSize>
+  <Blk>AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=</Blk>
+  <crc16>0x3333</crc16>
+</Command>
+
+<Command>
+  <Name>image_block</Name>
+  <Offset>0x00000000</Offset>
+  <BlkSize>0x40</BlkSize>
+  <Blk>AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=</Blk>
+  <crc16>0x3333</crc16>
+</Command>
+
+<Command>
+  <Name>image_block_request</Name>
+  <MfgCode>0x1095</MfgCode>
+  <ImgType>0x0000</ImgType>
+  <BlkSize>32</BlkSize>
+  <NewVer>1.2.29</NewVer>
+  <Offset>0x00000000</Offset>
+</Command>
+
+<Command>
+  <Name>image_invalidate_current</Name>
+</Command>

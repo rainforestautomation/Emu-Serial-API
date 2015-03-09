@@ -457,6 +457,7 @@ class emu():
                         except:
                             pass
                         self.ser.write(self.write_buffer)
+                        self.write_history('HOST', self.command_name.text, self.write_buffer, None)
                         self.write_buffer = None
                         time.sleep(0.1)
         except:
@@ -518,11 +519,10 @@ class emu():
         if tag in self.responseRoots:
             self.xmlTree =objectify.fromstring(block_string)
             module = __import__('api_classes')
-            class_ =getattr(module, tag)
-            print "class grabbed"
-            instance = class_(self.xmlTree)
-            print "instance made"
-            self.write_history('EMU', tag, self.original_block, self.xmlTree)
+            class_ = getattr(module, tag)
+            instance = class_(self.xmlTree, self.original_block)
+            setattr(self, tag, instance)
+            self.write_history('EMU', tag, self.original_block, instance)
         self.state[tag] = dict()
         for element in self.xmlTree.iter():
             self.data[element.tag] = element.text
@@ -536,9 +536,10 @@ class emu():
         history_obj ={
             'origin':origin,
             'type':tag,
-            'dict':dict_,
+            'obj':dict_,
             'raw': raw
         }
+        
         self.history.append(history_obj)
     def readback(self, limit=100):
         limit_count = 0
@@ -547,9 +548,7 @@ class emu():
             print "TYPE OF :"+str(item['type'])
             print "RAW DATA:-------------------       "
             print str(item['raw'])
-            print "PYTHON DICTIONARY-----------       "
-            print str(self.xmlTree)
-            print str(type(recursive_dict(self.xmlTree.getroot())))
+            #print str(type(recursive_dict(self.xmlTree.getroot())))
             limit_count +=1
             if limit_count >limit:
                 break
@@ -558,8 +557,12 @@ class emu():
 
         
 if __name__ == '__main__':
-    e = emu('tty.usbmodemfd121')
-    e.start_serial()
-    time.sleep(10)
-    e.readback(1000)
-    e.stop_serial()
+    emu_instance = emu('tty.usbmodemfd121')
+    emu_instance.start_serial()
+    emu_instance.get_current_summation_delivered()
+    time.sleep(5)
+    emu_instance.stop_serial()
+    print emu_instance.CurrentSummationDelivered
+    print emu_instance.CurrentSummationDelivered.SummationDelivered
+    for hist in emu_instance.history:
+        print hist
