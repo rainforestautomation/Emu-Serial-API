@@ -85,16 +85,21 @@ You can iterate through the history like so:
 
 # API Commands
 
-The Emu connects via serial port to your computer at a baud ra
+List of commands that can be issued:
 
-    #meta commnads
+    #creating emu object
+    emu_instance = emu('/tty/usbACM0')
+    #this will try to detrct environment, so no special care is needed for windows, just type emu('COMX')
+    
+    
+    
+    #meta commands
     #start serial, required before any othercommand can be issued
     emu.start_serial()
     #should be called when you no longer need to listen to emu
     emu.stop_serial()
     #command for printing to screen
     emu.readback()
-    
     
     #Standard Commands
     emu.restart()
@@ -119,8 +124,29 @@ The Emu connects via serial port to your computer at a baud ra
     emu.set_billing_periods_list(number_of_periods)
     emu.set_biling_period(period,start)
     emu.get_price_blocks()
-    emu.set_price_block(blcak,threshold,price)
+    emu.set_price_block(block,threshold,price)
     emu.get_schedule(mode)
     emu.get_profile_data(num_of_periods,interval_channel)
     emu.set_schedule(self,event,mode=None, frequency=None, enabled =None)
     emu.print_network_tables()
+    
+    #Accessing current emu state:(Provided the emu has sent state through serial to object)
+    emu_instance.NetworkInfo
+    emu_instance.MessageCluster
+    emu_instance.TimeCluster
+    emu_instance.InstantaneousDemand
+    emu_instance.NetworkInfo
+    emu_instance.PriceCluster
+    emu_instance.DeviceInfo
+    emu_instance.CurrentSummationDelivered
+    emu_instance.ScheduleInfo
+    emu_instance.BlockPriceDetail
+    
+    You can access attributes like so:
+    emu_instance.DeviceInfo.DeviceMacId
+    
+#Comments or suggestions
+
+The maintainer of this repo can be contacted at john dot lee at rainforestautomation dot com. Feel free to create issues or bugs if the api does something unexpected
+
+
