@@ -74,4 +74,12 @@ class BlockPriceDetail():
             setattr(self, element.tag, element.text)
     def __repr__(self):
         return self.block_string
+
+class ConnectionStatus():
+    def __init__(self, xml_tree,block_string):
+        self.block_string = block_string
+        for element in xml_tree.iterchildren():
+            setattr(self, element.tag, element.text)
+    def __repr__(self):
+        return self.block_string
         

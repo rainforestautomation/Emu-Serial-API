@@ -22,6 +22,9 @@ This API-Library allows you to connect to the EMU-2 through the USB-serial port 
     > instance.NetworkInfo.LinkStrength
     0x64
 
+You can purchase an EMU from here:
+http://www.amazon.com/Rainforest-EMU-2-Energy-Monitoring-Unit/dp/B00BGDPRAI
+
 
 # Getting Started
 ### Installation
