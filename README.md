@@ -6,7 +6,7 @@ This API-Library allows you to connect to the EMU-2 through the USB-serial port 
     > python
     > from emu import *
     > instance = emu('/tty/usbACM0')
-    > instance = emu.start_serial()
+    > instance = instance.start_serial()
     > instance.get_network_info()
     > instance.NetworkInfo
     <NetworkInfo>
