@@ -1,6 +1,6 @@
-#!/usr/bin/env python 
-from lxml import etree
-from lxml import objectify
+#!/usr/bin/env python3
+from xml.etree import ElementTree
+from xml.etree.ElementTree import Element, tostring as xml_tostring, indent as xml_indent, fromstring as xml_fromstring, ParseError
 import api_classes
 import argparse
 from io import StringIO, BytesIO
@@ -14,62 +14,62 @@ class emu():
     obj_type="emu_serial"
     #this is a list of all tags that are possible in the emu!
     #list of xml  root tags
-    command_root= etree.Element('Command')
-    command_firmware= etree.Element('Firmware')
+    command_root = Element('Command')
+    command_firmware = Element('Firmware')
     #list of tags that might be nested
-    command_name= etree.Element('Name')
+    command_name = Element('Name')
     #used in set meter attributes
-    multiplier =etree.Element('Multiplier')
-    divisor=etree.Element('Divisor')
+    multiplier = Element('Multiplier')
+    divisor = Element('Divisor')
     #used in set_fast_poll
-    frequency=etree.Element('Frequency')
-    duration = etree.Element('Duration')
-    _type = etree.Element('Type')
-    confirm = etree.Element('Confirm')
-    refresh = etree.Element('Refresh')
+    frequency = Element('Frequency')
+    duration = Element('Duration')
+    _type = Element('Type')
+    confirm = Element('Confirm')
+    refresh = Element('Refresh')
     #used for set_current_price
-    trailing_digits= etree.Element('TrailingDigits')
-    currency= etree.Element('Currency')
-    price= etree.Element('Price')
+    trailing_digits = Element('TrailingDigits')
+    currency = Element('Currency')
+    price = Element('Price')
     #used for set_meter_info
-    nickname= etree.Element('Nickname')
-    account= etree.Element('Account')
-    auth= etree.Element('Auth')
-    host = etree.Element('Host')
-    enabled = etree.Element('Enabled')
+    nickname = Element('Nickname')
+    account = Element('Account')
+    auth = Element('Auth')
+    host = Element('Host')
+    enabled = Element('Enabled')
     #billing periods
-    _id = etree.Element('Id')
-    current_day_max_demand= etree.Element('CurrentDayMaxDemand')
-    number_of_periods= etree.Element('NumberOfPeriods')
-    period= etree.Element('Period')
-    start = etree.Element('Start')
-    current_day_maximum_demand= etree.Element('CurrentDayMaximumDemand')
+    _id = Element('Id')
+    current_day_max_demand = Element('CurrentDayMaxDemand')
+    number_of_periods = Element('NumberOfPeriods')
+    period = Element('Period')
+    start = Element('Start')
+    current_day_maximum_demand = Element('CurrentDayMaximumDemand')
     #price_blocks
-    device_mac_id = etree.Element('DeviceMacId')
-    meter_mac_id= etree.Element('MeterMacId')
-    time_stamp= etree.Element('TimeStamp')
-    number_of_blocks= etree.Element('NumberOfBlocks')
-    threshold_1 = etree.Element('Threshold1')
-    threshold_2 = etree.Element('Threshold2')
-    threshold3= etree.Element('Threshold3')
-    threshold4= etree.Element('Threshold4')
-    threshold= etree.Element('Threshold')
-    interval_channel = etree.Element('IntervalChannel')
-    end_time = etree.Element('EndTime')
-    event = etree.Element('Event')
-    mode = etree.Element('Mode')
-    offset = etree.Element('Offset')
-    blk_size = etree.Element('BlkSize')
-    version = etree.Element('Version')
-    img_type = etree.Element('ImgType')
-    mfg_code = etree.Element('MfgCode')
-    erase = etree.Element('Erase')
-    img_size = etree.Element('ImgSize')
-    blk = etree.Element('Blk')
-    blk_size = etree.Element('BlkSize')
-    block = etree.Element('Block')
-    crc_16= etree.Element('crc16')
-    new_ver= etree.Element('NewVer')
+    device_mac_id = Element('DeviceMacId')
+    meter_mac_id = Element('MeterMacId')
+    time_stamp = Element('TimeStamp')
+    number_of_blocks = Element('NumberOfBlocks')
+    threshold_1 = Element('Threshold1')
+    threshold_2 = Element('Threshold2')
+    threshold3 = Element('Threshold3')
+    threshold4 = Element('Threshold4')
+    threshold = Element('Threshold')
+    interval_channel = Element('IntervalChannel')
+    end_time = Element('EndTime')
+    event = Element('Event')
+    mode = Element('Mode')
+    offset = Element('Offset')
+    blk_size = Element('BlkSize')
+    version = Element('Version')
+    img_type = Element('ImgType')
+    mfg_code = Element('MfgCode')
+    erase = Element('Erase')
+    img_size = Element('ImgSize')
+    blk = Element('Blk')
+    blk_size = Element('BlkSize')
+    block = Element('Block')
+    crc_16 = Element('crc16')
+    new_ver= Element('NewVer')
     write_buffer=''
     block_string=""
     tag_block=False
@@ -147,36 +147,41 @@ class emu():
         self.command_name.text = self.cmd_restart
         self.command.append(self.command_name)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def get_device_info(self):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_get_device_info
         self.command.append(self.command_name)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def get_network_info(self):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_get_network_info
         self.command.append(self.command_name)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def factory_reset(self):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_factory_reset
         self.command.append(self.command_name)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def get_restart_info(self):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_get_restart_info
         self.command.append(self.command_name)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def set_restart_info(self, _type , confirm):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_set_restart_info
@@ -186,8 +191,9 @@ class emu():
         self.confirm.text = confirm
         self.command.append(self._type)
         self.command.append(self.confirm)
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def get_meter_attributes(self):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_get_meter_attributes
@@ -200,8 +206,9 @@ class emu():
         self.command.append(self.command_name)
         self.command.append(self.multiplier)
         self.command.append(self.divisor)
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def set_fast_poll(self,frequency, duration):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_set_fast_poll
@@ -210,15 +217,17 @@ class emu():
         self.command.append(self.command_name)
         self.command.append(self.frequency)
         self.command.append(self.duration)
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def get_fast_poll_status(self):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_get_fast_poll_status
         self.command.append(self.command_name)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def get_current_price(self, refresh):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_get_current_price
@@ -226,8 +235,9 @@ class emu():
         self.command.append(self.command_name)
         self.command.append(self.refresh)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def set_current_price(price,currency ,trailing_digits):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_set_current_price
@@ -237,15 +247,17 @@ class emu():
         self.command.append(self.currency)
         self.command.append(self.trailing_digits)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def get_current_summation_delivered(self):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_get_current_summation_delivered
         self.command.append(self.command_name)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def get_instantaneous_demand(self,refresh ):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_get_instantaneous_demand
@@ -253,8 +265,9 @@ class emu():
         self.command.append(self.command_name)
         self.command.append(self.refresh)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def get_time(self,refresh):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_get_time
@@ -262,8 +275,9 @@ class emu():
         self.command.append(self.command_name)
         self.command.append(self.refresh)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def set_current_price(self,price ,trailing_digits):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_set_current_price
@@ -273,8 +287,9 @@ class emu():
         self.command.append(self.price)
         self.command.append(self.trailing_digits)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def set_meter_info(self,nickname,account,auth,host,enabled):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_set_current_price
@@ -290,22 +305,25 @@ class emu():
         self.command.append(self.host)
         self.command.append(self.enabled)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def get_message(self):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_get_message
         self.command.append(self.command_name)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def get_local_attributes(self):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_get_local_attributes
         self.command.append(self.command_name)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def set_local_attributes(self,current_day_max_demand):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_set_local_attributes
@@ -313,15 +331,17 @@ class emu():
         self.command.append(self.command_name)
         self.command.append(self.current_day_maximum_demand)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def get_billing_periods(self):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_get_billing_periods
         self.command.append(self.command_name)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def set_billing_period_list(self,number_of_billing_period ):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_set_billing_period_list
@@ -329,8 +349,9 @@ class emu():
         self.command.append(self.command_name)
         self.command.append(self.number_of_periods)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def set_billing_period(self, period, start):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_set_billing_period
@@ -340,15 +361,17 @@ class emu():
         self.command.append(self.period)
         self.command.append(self.start)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def get_price_blocks(self):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_get_price_blocks
         self.command.append(self.command_name)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def set_price_block(self,block,threshold,price ):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_set_price_block
@@ -360,8 +383,9 @@ class emu():
         self.command.append(self.threshold)
         self.command.append(self.price)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def get_schedule(self, mode):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_get_schedule
@@ -369,8 +393,9 @@ class emu():
         self.command.append(self.command_name)
         self.command.append(self.mode)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def get_profile_data(self, number_of_periods , interval_channel):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_get_profile_data
@@ -380,8 +405,9 @@ class emu():
         self.command.append(self.interval_channel)
         self.command.append(self.number_of_periods)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def set_schedule(self,event,mode, frequency, enabled ):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_set_schedule
@@ -402,44 +428,52 @@ class emu():
         self.command.append(self.command_name)
         self.command.append(self.event)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
     def print_network_tables(self):
         self.command = copy.copy(self.command_root)
         self.command_name.text = self.cmd_print_network_tables
         self.command.append(self.command_name)
         #adding in the actual command
-        self.write_buffer =etree.tostring(self.command, pretty_print=True)
-        print self.write_buffer
+        xml_indent(self.command)
+        self.write_buffer = xml_tostring(self.command)
+        self.debug_command(self.write_buffer)
+    
+    def debug_command(self, msg):
+        #print("debug_command:", msg)
+        pass
+
     def create_serial(self):
+        # fix the port/prefix:
+        PREFIXES = { "osx": self.osx_prefix, "linux": self.linux_prefix }
+        prefix = PREFIXES[self.environment] if self.environment in PREFIXES else self.windows_prefix
+        port = str(self.port)
+        port = port if self.port.startswith(prefix) else prefix + port
         try:
-            if self.environment =="osx":
-                self.ser = serial.Serial(self.osx_prefix+str(self.port),self.baud_rate,timeout=self.timeout)
-            elif self.environment == "linux":
-                self.ser = serial.Serial(self.linux_prefix+str(self.port),self.baud_rate,timeout=self.timeout)
-            else:
-                self.ser = serial.Serial(self.windows_prefix+str(self.port),self.baud_rate,timeout=self.timeout)
+            self.ser = serial.Serial(port, self.baud_rate, timeout=self.timeout)
             self.serial_connected =True
             self.serial_attempt=0
         except:
+            print(sys.exc_info())
             if self.serial_attempt >3:
-                print "Throwing an error, can't connect to EMU serial"
+                print("Throwing an error, can't connect to EMU serial")
                 raise
             else:
                 self.serial_attempt = self.serial_attempt+1
-                print "having trouble connecting to serial...."+str(self.serial_attempt)
+                print("having trouble connecting to serial...."+str(self.serial_attempt))
                 time.sleep(10)
     def serial_thread(self):
         self.stop_thread=False
         #this function is the thread which reads from the serial, writes to the serial and calls parsing functions
-        print "Starting serial process for EMU on "+str(self.port)
+        print("Starting serial process for EMU on "+str(self.port))
         #inifinite loop
         try:
             self.create_serial()
             while True:
                 if self.stop_thread is True:
                     self.ser.close()
-                    print "Closing serial port for EMU"
+                    print("Closing serial port for EMU")
                     #in case we was to stop thread
                     self.stop_thread=False
                     self.serial_connected=False
@@ -469,9 +503,10 @@ class emu():
         self.stop_thread= True
     def parse_response(self,response):
         self.response = unicode(illegal_xml_re.sub('', response))
-        self.reponse_root =etree.fromstring(self.response)
-        for child in self.response:
-            self.tree = objectify.Element(root)
+        self.reponse_root =xml_fromstring(self.response)
+        # TODO: What are the below three lines trying to do?
+        #for child in self.response:
+        #    self.tree = objectify.Element(root)
         #self.tree = etree.fromstring()
     def look_for_start_tag(self,line):
         #this reads eachline looking for a start tag
@@ -480,7 +515,7 @@ class emu():
         for tag in self.responseRoots:
             tagToString = '<'+tag+'>'
             if  tagToString in line:
-                    start_tag=True;
+                    start_tag=True
                     self.tag = tag
         return start_tag
     def look_for_end_tag(self,line):
@@ -495,6 +530,7 @@ class emu():
     def serial_reader(self,line):
         #this function is reads the text
         self.start_flag=False
+        line = str(line, 'UTF-8')
         if self.look_for_start_tag(line):
             self.tag_block=True
             self.start_flag=True
@@ -506,18 +542,19 @@ class emu():
             try:
                 self.block_to_tree(self.block_string,self.tag)
             except Exception as e:
-                print str(e)
-                print "XML ISSUE"
+                print("XML ISSUE:", e)
                 obj =dict()
                 # self.block_string
             self.block_string=""
             self.original_block = ""
         self.start_flag=False
     def block_to_tree(self,block_string,tag):
-        #print "converting string"
         block_string = self.illegal_xml_re.sub('', block_string)
         if tag in self.responseRoots:
-            self.xmlTree =objectify.fromstring(block_string)
+            try:
+                self.xmlTree = xml_fromstring(block_string)
+            except ParseError as err:
+                print("ERROR parsing XML:", err, block_string)
             module = __import__('api_classes')
             class_ = getattr(module, tag)
             instance = class_(self.xmlTree, self.original_block)
@@ -544,11 +581,11 @@ class emu():
     def readback(self, limit=100):
         limit_count = 0
         for item in reversed(self.history):
-            print "SENT BY :"+str(item['origin'])
-            print "TYPE OF :"+str(item['type'])
-            print "RAW DATA:-------------------       "
-            print str(item['raw'])
-            #print str(type(recursive_dict(self.xmlTree.getroot())))
+            print("SENT BY :"+str(item['origin']))
+            print("TYPE OF :"+str(item['type']))
+            print("RAW DATA:-------------------       ")
+            print(str(item['raw']))
+            #print(str(type(recursive_dict(self.xmlTree.getroot()))))
             limit_count +=1
             if limit_count >limit:
                 break
@@ -557,12 +594,25 @@ class emu():
 
         
 if __name__ == '__main__':
-    emu_instance = emu('tty.usbmodemfd121')
+
+    # parse arguments:
+    parser = argparse.ArgumentParser(prog="emu",
+                                     description="Connect to the EMU-2 Energy Monitoring Unit via serial")
+    parser.add_argument('--port', '-p',
+                        help='Serial port of the EMU-2 plugged into USB [tty.usbmodemfd121]',
+                        default="tty.usbmodemfd121")
+    args = parser.parse_args()
+    
+    # connect & output
+    emu_instance = emu(vars(args)['port'])
     emu_instance.start_serial()
     emu_instance.get_current_summation_delivered()
     time.sleep(5)
     emu_instance.stop_serial()
-    print emu_instance.CurrentSummationDelivered
-    print emu_instance.CurrentSummationDelivered.SummationDelivered
+    print("\n----- CurrentSummationDelivered -----")
+    print(emu_instance.CurrentSummationDelivered)
+    print("\n----- CurrentSummationDelivered.SummationDelivered -----")
+    print(emu_instance.CurrentSummationDelivered.SummationDelivered)
+    print("\n----- History of Responses: ------")
     for hist in emu_instance.history:
-        print hist
+        print(hist)
